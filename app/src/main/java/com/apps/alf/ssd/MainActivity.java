@@ -133,7 +133,7 @@ public class MainActivity extends ActionBarActivity implements OnInitListener {
 
                                                    if (!alreadyDoingOnShakeEvent) {
                                                        toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
-                                                       Log.d(DEBUGTAG, "YOU SHOOK ME");
+                                                       Log.d(DEBUGTAG, "YOU SHOOK ME PAL");
 
                                                        if (isConnected()) { // i.e. Is connected to the Internet
 
