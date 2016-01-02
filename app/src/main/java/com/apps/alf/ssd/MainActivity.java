@@ -1,9 +1,7 @@
 package com.apps.alf.ssd;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -16,23 +14,19 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
 
-public class MainActivity extends ActionBarActivity implements OnInitListener {
+public class MainActivity extends AppCompatActivity implements OnInitListener {
 
     // The debug instance variables
     public final static String DEBUGTAG = "AWB";
@@ -44,8 +38,15 @@ public class MainActivity extends ActionBarActivity implements OnInitListener {
 
     // TTS instance variables+;
     public static Cursor cursorResultSet;                                        // created
+    public static int tapCount = 0;  //counter to monitor number of screen taps ... 4 will call the speech recogniser
+    public static boolean tapped3times = false;
     // The SimpleSpeedDialler class variables
     final SimpleSpeedDialAssistant mySSDA = new SimpleSpeedDialAssistant();
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    final Intent speechrecognitionIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
     Boolean alreadyDoingOnShakeEvent = false;
     ArrayList<String> speechRecognitionReturnStringsArray;
     // The Shake instance variables
@@ -53,24 +54,18 @@ public class MainActivity extends ActionBarActivity implements OnInitListener {
     private ShakeEventListener mSensorListener;
     private TextToSpeech myTTS;
     private Intent TTSintent = new Intent(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA); // Text to Speech intent object
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+    private TapCounter screentaps = new TapCounter(this, speechrecognitionIntent, MY_SPEECH_RECOGNITION_CHECK_CODE);
 
     // +++++++++++++++++++++++ ONCREATE
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainactivity);
+        AddTouchListener();
 
-		/*--------------------------------------------------------------------	
-
-			Speech recognition intents set up */
-
-        final Intent speechrecognitionIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        // Databse stuff
 
         SSDDatabase db = new SSDDatabase(getApplicationContext(), null, null, 1);
         cursorResultSet = db.readAllFromDatabase();
@@ -79,8 +74,15 @@ public class MainActivity extends ActionBarActivity implements OnInitListener {
             Log.d(DEBUGTAG, cursorResultSet.getString(0));
             Log.d(DEBUGTAG, cursorResultSet.getString(1));
             Log.d(DEBUGTAG, cursorResultSet.getString(2));
-
         }
+
+
+	/*--------------------------------------------------------------------
+            Speech recognition intents set up */
+
+
+
+
 
 		/*
          * IT MAY BE BETTER TO USE THE SpeechRecognizer CLASS INSTEAD TO GET
@@ -88,13 +90,13 @@ public class MainActivity extends ActionBarActivity implements OnInitListener {
 		 */
 
 		/*
-		 * Starts an activity that will prompt the user for speech and send it
+         * Starts an activity that will prompt the user for speech and send it
 		 * through a speech recognizer.
 		 */
 
         speechrecognitionIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-		/*
-		 * Required constants that tell the SR service what languages to use
+        /*
+         * Required constants that tell the SR service what languages to use
 		 * 
 		 * 
 		 * 
@@ -197,7 +199,6 @@ public class MainActivity extends ActionBarActivity implements OnInitListener {
 
                 Toast.makeText(MainActivity.this, "Hey.Speak to me button clicked", Toast.LENGTH_SHORT).show();
                 Log.d(DEBUGTAG, "Hey,Speak to me button clicked");
-
                 String text = mySSDA.getTTSstring();
 				/*
 				 * and use the myTTSstring / method which returns
@@ -217,9 +218,7 @@ public class MainActivity extends ActionBarActivity implements OnInitListener {
 
         // ---------------------------------------------------------------------------------------------------------------------------
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
     }
 
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -324,28 +323,6 @@ public class MainActivity extends ActionBarActivity implements OnInitListener {
                                 // without making a phone call
 
                             }
-
-                            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                                // TODO: Consider calling
-                                //    ActivityCompat#requestPermissions
-                                // here to request the missing permissions, and then overriding
-                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                //                                          int[] grantResults)
-                                // to handle the case where the user grants the permission. See the documentation
-                                // for ActivityCompat#requestPermissions for more details.
-                                return;
-                            }
-                            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                                // TODO: Consider calling
-                                //    ActivityCompat#requestPermissions
-                                // here to request the missing permissions, and then overriding
-                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                //                                          int[] grantResults)
-                                // to handle the case where the user grants the permission. See the documentation
-                                // for ActivityCompat#requestPermissions for more details.
-                                return;
-                            }
-                            startActivity(callIntent);
 
                         } else {
                             Toast.makeText(this, "Oh dear, No such number", Toast.LENGTH_SHORT).show();
@@ -494,7 +471,11 @@ public class MainActivity extends ActionBarActivity implements OnInitListener {
 
     @Override
     protected void onPause() {
+
+        // Sav instance variables before app closes.
+
         super.onPause();
+
         mSensorManager.unregisterListener(mSensorListener); // if you're not
 		/*
 
@@ -513,41 +494,25 @@ public class MainActivity extends ActionBarActivity implements OnInitListener {
     public void onStart() {
         super.onStart();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.apps.alf.ssd/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
+
     }
 
     @Override
     public void onStop() {
         super.onStop();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.apps.alf.ssd/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
     }
 
     // -----------------------------------------------------------------------------------------------------------------------------
+    private void AddTouchListener() {
+
+        // Creating an ontouchlistener using the imageview class
+        // always start with the findviewbyId (R.id.??) then create the listener
+        // with auto-complete to create the basic structure of the return method
+
+        ImageView image = (ImageView) findViewById(R.id.touch_image);  //  Create the image object (ie a reference to a copy of the picture). Is the (ImageView) a cast statement?
+        image.setOnTouchListener(screentaps); /* pass the tapcounter  onTouchListener as a
+         parameter to the ontouch listener. This class will monitor for 4 taps after which the speech recog will be invoked*/
+    }
+
 }
