@@ -16,7 +16,6 @@ import java.util.ArrayList;
 class SSDDatabase extends SQLiteOpenHelper
 
 {
-
     // Instance variables .....//
 
     private static final String Speeddial_table = "Speeddials";
@@ -28,11 +27,9 @@ class SSDDatabase extends SQLiteOpenHelper
     private static final String MYTAG = "AWB";
 // these are all string constants, the table column names//
 
-
     public SSDDatabase(Context context, String dbName, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, "SSD3.db", factory, 1);
+        super(context, "MySSD.db", factory, 1);
     }
-
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -61,9 +58,44 @@ class SSDDatabase extends SQLiteOpenHelper
         db.insert(Speeddial_table, null, values);  // pass the object full of values to the database points table
 
         values.put(COL_Speeddial, 3);
-        values.put(COL_Name, "Alf");  // x and y are instance variables of the object "point"
-        values.put(COL_Number, "07798734186");
-        db.insert(Speeddial_table, null, values);  // pass the object full of values to the database points tabl
+        values.put(COL_Name, "George");  // x and y are instance variables of the object "point"
+        values.put(COL_Number, "07534344366");
+        db.insert(Speeddial_table, null, values);  // pass the object full of values to the database points table
+
+        values.put(COL_Speeddial, 4);
+        values.put(COL_Name, "Emma");  // x and y are instance variables of the object "point"
+        values.put(COL_Number, "07498286323");
+        db.insert(Speeddial_table, null, values);  // pass the object full of values to the database points table
+
+        values.put(COL_Speeddial, 5);
+        values.put(COL_Name, "Mum and Dad");  // x and y are instance variables of the object "point"
+        values.put(COL_Number, "01606853203");
+        db.insert(Speeddial_table, null, values);  // pass the object full of values to the database points table
+
+        values.put(COL_Speeddial, 6);
+        values.put(COL_Name, "Available");  // x and y are instance variables of the object "point"
+        values.put(COL_Number, " ");
+        db.insert(Speeddial_table, null, values);  // pass the object full of values to the database points table
+
+        values.put(COL_Speeddial, 7);
+        values.put(COL_Name, "Available");  // x and y are instance variables of the object "point"
+        values.put(COL_Number, " ");
+        db.insert(Speeddial_table, null, values);  // pass the object full of values to the database points table
+
+        values.put(COL_Speeddial, 8);
+        values.put(COL_Name, "Available");  // x and y are instance variables of the object "point"
+        values.put(COL_Number, " ");
+        db.insert(Speeddial_table, null, values);  // pass the object full of values to the database points table
+
+        values.put(COL_Speeddial, 9);
+        values.put(COL_Name, "Available");  // x and y are instance variables of the object "point"
+        values.put(COL_Number, "");
+        db.insert(Speeddial_table, null, values);  // pass the object full of values to the database points table
+
+        values.put(COL_Speeddial, 10);
+        values.put(COL_Name, "Available");  // x and y are instance variables of the object "point"
+        values.put(COL_Number, " ");
+        db.insert(Speeddial_table, null, values);  // pass the object full of values to the database points table
 
     }
 
