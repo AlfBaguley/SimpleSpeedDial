@@ -1,12 +1,11 @@
 package com.apps.alf.ssd;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.media.AudioManager;
-import android.media.ToneGenerator;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -14,6 +13,7 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -37,7 +37,9 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
     private static final int MY_TTS_CHECK_CODE = 123;
 
     // TTS instance variables+;
-    public static Cursor cursorResultSet;                                        // created
+    public static Cursor cursorResultSet;
+    public static String contactArray[] = new String[10];
+    public static String phoneNumberArray[] = new String[10];
     public static int tapCount = 0;  //counter to monitor number of screen taps ... 4 will call the speech recogniser
     public static boolean tapped3times = false;
     // The SimpleSpeedDialler class variables
@@ -47,14 +49,15 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     final Intent speechrecognitionIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-    Boolean alreadyDoingOnShakeEvent = false;
+    //Boolean alreadyDoingOnShakeEvent = false;
     ArrayList<String> speechRecognitionReturnStringsArray;
+    private int arrayCount;
     // The Shake instance variables
     private SensorManager mSensorManager;
     private ShakeEventListener mSensorListener;
     private TextToSpeech myTTS;
     private Intent TTSintent = new Intent(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA); // Text to Speech intent object
-    private TapCounter screentaps = new TapCounter(this, speechrecognitionIntent, MY_SPEECH_RECOGNITION_CHECK_CODE);
+    private MyTouchListener screentaps = new MyTouchListener(this, speechrecognitionIntent, MY_SPEECH_RECOGNITION_CHECK_CODE);
 
     // +++++++++++++++++++++++ ONCREATE
 
@@ -65,112 +68,29 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         setContentView(R.layout.mainactivity);
         AddTouchListener();
 
-        // Databse stuff
+        // Database stuff
 
         SSDDatabase db = new SSDDatabase(getApplicationContext(), null, null, 1);
         cursorResultSet = db.readAllFromDatabase();
-
+        arrayCount = 0;
         while (cursorResultSet.moveToNext()) {
+
             Log.d(DEBUGTAG, cursorResultSet.getString(0));
             Log.d(DEBUGTAG, cursorResultSet.getString(1));
             Log.d(DEBUGTAG, cursorResultSet.getString(2));
+            contactArray[arrayCount] = cursorResultSet.getString(1);
+            phoneNumberArray[arrayCount] = cursorResultSet.getString(2);
+
+            arrayCount++;
+
         }
 
-
-	/*--------------------------------------------------------------------
-            Speech recognition intents set up */
-
-
-
-
-
-		/*
-         * IT MAY BE BETTER TO USE THE SpeechRecognizer CLASS INSTEAD TO GET
-		 * ROUND THE "didnt recognise that, try again" message!before a timeout?
-		 */
-
-		/*
-         * Starts an activity that will prompt the user for speech and send it
-		 * through a speech recognizer.
-		 */
-
         speechrecognitionIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        /*
-         * Required constants that tell the SR service what languages to use
-		 * 
-		 * 
-		 * 
-		 * ----------------------------------------------------------------------
-		 * ....next the listeners
-		 * 
-		 * First the shake listener (which uses on board sensors)
-		 */
-
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		/*
-		 * System level services in this case sensor services
-		 */
-
-        mSensorListener = new ShakeEventListener();
-		/*
-		 * shake event listener object instance created
-		 */
-
-        mSensorListener.setOnShakeListener(new ShakeEventListener.OnShakeListener() {
-
-			/*
-			 * Create the beeper i.e. Create and instance of ToneGenerator. Send
-			 * the tone to the "alarm" stream (classic beeps go there) with 50%
-			 * volume
-			 */
-
-                                               ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 50);
-
-                                               // Finally Create the actual on-shake service routine for shake
-                                               // events
-
-                                               public void onShake() {
-
-                                                   // can do this if not already servicing a shake event listener
-
-                                                   if (!alreadyDoingOnShakeEvent) {
-                                                       toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
-                                                       Log.d(DEBUGTAG, "YOU SHOOK ME PAL,WHICH MEANS SHAKE LISTENER ACTIVATED");
-
-                                                       if (isConnected()) { // i.e. Is connected to the Internet
-
-                                                           startActivityForResult(speechrecognitionIntent, MY_SPEECH_RECOGNITION_CHECK_CODE);
-                                                           alreadyDoingOnShakeEvent = true; // prevent response to
-                                                           // further shake
-                                                           // events
-						/*
-						 * Gets the SR activity going and gives the SR a code to
-						 * return with the data which will identify it from any
-						 * other data returned from other intents also lets the
-						 * "intentee" know that you want a result (data) back.
-						 */
-
-                                                           // Toast.makeText(getApplicationContext(),
-                                                           // "Intent for Speech recognition sent",
-                                                           // Toast.LENGTH_LONG).show();
-
-                                                       } else {
-                                                           Toast.makeText(getApplicationContext(), "Activity not possible because i am not connected to Internet", Toast.LENGTH_LONG).show();
-
-                                                       }
-                                                   } else {
-
-                                                   }
-
-                                               }
-                                           }
-
-        );
 
         // ----------------------------------------------------------------------------------------------------------------------------
 
 		/*
-		 * TTS intent action configured
+         * TTS intent action configured
 		 */
 
         //TTSintent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);//
@@ -183,11 +103,10 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
             Log.d(MainActivity.DEBUGTAG, "Exception thrown...." + ex);
         }
 
-
         Button speakButton = (Button) findViewById(R.id.btnSpeak);
 
 		/*
-		 * The speak button
+         * The speak button
 		 */
         speakButton.setOnClickListener(new OnClickListener() {
 
@@ -198,10 +117,10 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
                 // Intent to check for Text To Speech engine present
 
                 Toast.makeText(MainActivity.this, "Hey.Speak to me button clicked", Toast.LENGTH_SHORT).show();
-                Log.d(DEBUGTAG, "Hey,Speak to me button clicked");
-                String text = mySSDA.getTTSstring();
-				/*
-				 * and use the myTTSstring / method which returns
+                Log.d(DEBUGTAG, "Hey,Speak to me button clicked...");
+                String text = mySSDA.getTTSgreetingString();
+                /*
+                 * and use the myTTSstring / method which returns
 				 * 
 				 * the string to speak first initialise the intent
 				 */
@@ -216,19 +135,14 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
             }
         });
 
-        // ---------------------------------------------------------------------------------------------------------------------------
-
-
     }
 
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     // end of ONCREATE
 
-    // -----------------------------------------------------------------------------------------------------------------
-
     public boolean isConnected()
-	/*
-	 * Make sure we have an internet connection because Speech recog needs
+    /*
+     * Make sure we have an internet connection because Speech recog needs
 	 * internet access
 	 */
 
@@ -251,53 +165,41 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
         switch (requestCode) {
 
-            case MY_TTS_CHECK_CODE:
+            case MY_TTS_CHECK_CODE:    //i.e If this is a response to TTS intent
 
                 Toast.makeText(this, "Text to speech task", Toast.LENGTH_SHORT).show();
 
                 if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-
-                    // success, create the TTS instance
-
                     myTTS = new TextToSpeech(this, this);  //context = this and onInit is in "this" class (see auto generated bit near the end of this code//
 
                 } else {
 
-                    // missing data, install it
+                    // missing data, so install it...
 
                     Intent installIntent = new Intent();
-
                     installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-
                     startActivity(installIntent);
                 }
 
                 break;
 
-            case MY_SPEECH_RECOGNITION_CHECK_CODE:
-                // Toast.makeText(this, "Speech recognition task",
-                // Toast.LENGTH_SHORT).show();
+            case MY_SPEECH_RECOGNITION_CHECK_CODE: //i.e If this is a response to Speech Recognition intent
 
                 switch (resultCode) {
 
                     case RESULT_OK:
 
-                    {
-
-                        // RESULT_OK is a standard (any) activity result code
                         speechRecognitionReturnStringsArray = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                        myTTS.setSpeechRate((float) 2.0); // speak a bit quickly please
-                        myTTS.speak(mySSDA.GetPhoneNumberString(speechRecognitionReturnStringsArray), TextToSpeech.QUEUE_ADD, null);
 
-                        do {
-                            // don't dial until end of chat
-                        } while (myTTS.isSpeaking());
-
-
-                        Log.d(DEBUGTAG, speechRecognitionReturnStringsArray.toString());
-                        alreadyDoingOnShakeEvent = false; // allow shake events again
 
                         if (mySSDA.IsValidPhoneNumber(speechRecognitionReturnStringsArray)) {
+
+                            myTTS.setSpeechRate((float) 2.0); // speak a bit quickly please
+                            myTTS.speak(mySSDA.getTTSString(), TextToSpeech.QUEUE_ADD, null);
+
+                            do {
+                                // don't dial until end of chat
+                            } while (myTTS.isSpeaking());
 
                             Intent callIntent = new Intent(Intent.ACTION_CALL);
                             // Create Intent instance for making phone call
@@ -305,103 +207,81 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
                             try {
 
 						/*
-						 * Give the intent object a acceptable phone command
+                         * Give the intent object an acceptable phone command
 						 * such as "tel:01889503300"
 						 */
-
-                                callIntent.setData(Uri.parse(mySSDA.ProcessReturnStringsandReturnNumberToDial(speechRecognitionReturnStringsArray)));
-                            } catch (Exception e) {
-
-						/*
-						 * handle exception such as incompatible phone command
-						 * such as Null....
-						 */
+                                callIntent.setData(Uri.parse(mySSDA.getPhoneNumberString()));
+                            } catch (Exception e) {   // handle exception such as incompatible phone command
 
                                 Toast.makeText(this, "Oh dear call Intent failed", Toast.LENGTH_SHORT).show();
                                 myTTS.speak("Oh dear, call intent failed", TextToSpeech.QUEUE_ADD, null);
-                                break; // i.e. get out of this routine this if statement
-                                // without making a phone call
+                                break; //
 
                             }
 
+                            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                                // TODO: Consider calling
+                                //    ActivityCompat#requestPermissions
+                                // here to request the missing permissions, and then overriding
+                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                //                                          int[] grantResults)
+                                // to handle the case where the user grants the permission. See the documentation
+                                // for ActivityCompat#requestPermissions for more details.
+                                return;
+                            }
+                            startActivity(callIntent); // This asks a dialler to make the phone call
+
                         } else {
                             Toast.makeText(this, "Oh dear, No such number", Toast.LENGTH_SHORT).show();
-                            break;
+                            myTTS.setSpeechRate((float) 2.0); // speak a bit quickly please
+                            myTTS.speak(mySSDA.getTTSString(), TextToSpeech.QUEUE_ADD, null);
                         }
-                        break;
-                    }
 
-                    case RecognizerIntent.RESULT_NO_MATCH: // this is a result code sent
-                        // specifically
-                        // by speech recogniser //
-                    {
+                        break;
+
+                    case RecognizerIntent.RESULT_NO_MATCH:
                         Toast.makeText(this, "Oh dear, No match found", Toast.LENGTH_SHORT).show();
-                        alreadyDoingOnShakeEvent = false;
                         break;
-                    }
 
-                    case RecognizerIntent.RESULT_SERVER_ERROR: {
+
+                    case RecognizerIntent.RESULT_SERVER_ERROR:
                         Toast.makeText(this, "Oh dear, Server Error", Toast.LENGTH_SHORT).show();
-                        alreadyDoingOnShakeEvent = false;
                         break;
-                    }
 
-                    case RecognizerIntent.RESULT_AUDIO_ERROR: {
+
+                    case RecognizerIntent.RESULT_AUDIO_ERROR:
                         Toast.makeText(this, "Oh dear, Audio Error", Toast.LENGTH_SHORT).show();
-                        alreadyDoingOnShakeEvent = false;
                         break;
-                    }
 
-                    default: {
+                    default:
                         Toast.makeText(this, "Oh dear, Recogniser result not ok", Toast.LENGTH_SHORT).show();
-                        alreadyDoingOnShakeEvent = false;
-                        break;
-                    }
-
-                } // /* end of speech recognition switch statement */
-
+                }
             default:
-                super.onActivityResult(requestCode, resultCode, data); // if not one
-                // of my
-                // codes
-                // then
-                // return to
-                // the
-                // parent
-                // class
-                // onactivityresults
-                break;                                                        // //
+                super.onActivityResult(requestCode, resultCode, data);
         }
+
+        // /* end of speech recognition switch statement */
+
+                /*
+                if not one
+                of my
+                codes
+                then
+                return to
+                the
+                parent
+                class
+                onactivityresults
+                */
+
+
+    }
 
 		/* end of onactivityresults switch statement */
 
-    }// end of OnActivityResult
+    // end of OnActivityResult
 
     // -----------------------------------------------------------------------------------------------------------------------------
-
-	/*
-	 * public class ServiceReceiver extends BroadcastReceiver {
-	 * 
-	 * @Override public void onReceive(Context context, Intent intent) {
-	 * MyPhoneStateListener phoneListener=new MyPhoneStateListener();
-	 * TelephonyManager telephony = (TelephonyManager)
-	 * context.getSystemService(Context.TELEPHONY_SERVICE);
-	 * telephony.listen(phoneListener,PhoneStateListener.LISTEN_CALL_STATE); } }
-	 * 
-	 * 
-	 * For the full class including the imports, please download the files
-	 * below. In here we have another class called MyPhoneStateListener, which
-	 * would be shown at the bottom. What this class would do is execute the
-	 * phoneListener when the telephony.listen has received a LISTEN_CALL_STATE.
-	 * 
-	 * 
-	 * public class MyPhoneStateListener extends PhoneStateListener { public
-	 * void onCallStateChanged(int state,String incomingNumber){ switch(state){
-	 * case TelephonyManager.CALL_STATE_IDLE: Log.d("DEBUG", "IDLE"); break;
-	 * case TelephonyManager.CALL_STATE_OFFHOOK: Log.d("DEBUG", "OFFHOOK");
-	 * break; case TelephonyManager.CALL_STATE_RINGING: Log.d("DEBUG",
-	 * "RINGING"); break; } } }
-	 */
 
     @Override
     public void onInit(int status) {
@@ -417,11 +297,8 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
             Toast.makeText(MainActivity.this,
 
                     "Error occurred while initializing Text-To-Speech engine", Toast.LENGTH_LONG).show();
-
         }
-
     }
-
     // ----------------------------------------------------------------------------------------------------------------------------
 
     @Override
@@ -430,10 +307,8 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
         getMenuInflater().inflate(R.menu.main, menu);
 
-
         return true;
     }
-
     // ----------------------------------------------------------------------------------------------------------------------------
 
     @Override
@@ -448,25 +323,18 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
             Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
             return true;
-
         }
         return super.onOptionsItemSelected(item);
-
     }
-
-
     // -----------------------------------------------------------------------------------------------------------------------------
 
     @Override
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_UI);
-        // Register the listener to activate the sensor for this activity
 
         // Need also to re-init TTS and Speech recog perhaps
 
     }
-
     // ----------------------------------------------------------------------------------------------------------------------------
 
     @Override
@@ -475,32 +343,16 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         // Sav instance variables before app closes.
 
         super.onPause();
-
-        mSensorManager.unregisterListener(mSensorListener); // if you're not
-		/*
-
-		going to use the
-		sensors then
-		"switch them off"
-		(sort of)
-		need to also unregister TTS and Speech recog perhaps
-
-		*/
-
-        super.onStop();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-
     }
 
     @Override
     public void onStop() {
         super.onStop();
-
     }
 
     // -----------------------------------------------------------------------------------------------------------------------------
@@ -512,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
         ImageView image = (ImageView) findViewById(R.id.touch_image);  //  Create the image object (ie a reference to a copy of the picture). Is the (ImageView) a cast statement?
         image.setOnTouchListener(screentaps); /* pass the tapcounter  onTouchListener as a
-         parameter to the ontouch listener. This class will monitor for 4 taps after which the speech recog will be invoked*/
+         parameter to the ontouch listener. This class will monitor for 3 taps after which the speech recog will be invoked*/
     }
 
 }
