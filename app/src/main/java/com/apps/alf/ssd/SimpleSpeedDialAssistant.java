@@ -43,30 +43,20 @@ public class SimpleSpeedDialAssistant extends Activity implements OnInitListener
 
         do {
 
-            if (myVoiceInput.contains("simple speed dial " + count.toString()))
+            if (myVoiceInput.contains("simple speed dial " + count.toString())) {
 
-            // choose the number from the array
-
-            {
                 isValid = true;
-                Log.d(MainActivity.DEBUGTAG, "Got one");
-                Log.d(MainActivity.DEBUGTAG, "There are " + myVoiceInput.size() + " suggestions");
+                Log.d(MainActivity.DEBUGTAG, "Got one!!!!!");
 
+                // List speech recog output to log cat
                 for (int i = 1; i < myVoiceInput.size(); i++) {
-                    Log.d(MainActivity.DEBUGTAG, "You said " + myVoiceInput.get(i - 1)); // arrays start at zero
+                    Log.d(MainActivity.DEBUGTAG, "You said " + myVoiceInput.get(i - 1));
                 }
 
-                for (Integer i = 1; i <= MainActivity.contactArray.length; i++) {
-
-                    if (myVoiceInput.contains("simple speed dial " + i.toString())) {
-                        Log.d(MainActivity.DEBUGTAG, "Ready to dial " + MainActivity.contactArray[i - 1] + " on " + MainActivity.phoneNumberArray[i - 1]);
-                        phoneNumberString = "tel:" + MainActivity.phoneNumberArray[i - 1];
-                        ttsString = "Speed dial " + i + " " + MainActivity.contactArray[i - 1];
-                        // arrays start at zero
-                    } else ;
-                }
+                Log.d(MainActivity.DEBUGTAG, "Ready to dial " + MainActivity.contactArray[count - 1] + " on " + MainActivity.phoneNumberArray[count - 1]);
+                phoneNumberString = "tel:" + MainActivity.phoneNumberArray[count - 1];
+                ttsString = "Speed dial " + count.toString() + " " + MainActivity.contactArray[count - 1];
             } else
-
                 count++;
 
         } while (!isValid && count <= MainActivity.contactArray.length);

@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         }
 
         speechrecognitionIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-
         // ----------------------------------------------------------------------------------------------------------------------------
 
 		/*
