@@ -10,117 +10,87 @@ public class SimpleSpeedDialAssistant extends Activity implements OnInitListener
     // the instance variables
     // TTS string constants
 
+
     private static final String SSDIloveAlf = "Hi Alf, you sexy bastard";
-    private static final String[] contactArray = {"List", "Home", "Karen mobile", "George mobile", "Emma mobile", "Mum and Dad", "Alf mobile", "Alf mobile", "Alf mobile", "Alf mobile", "Alf mobile"};
-    private static final String[] phoneNumberArray = {" ", "01952840465", "07850769076", "07534344366", "07498286323", "01606853203", "07798734186", "07798734186", "07798734186", "07798734186", "07798734186"};
+    private String phoneNumberString;
+    private String ttsString;
 
-    // ArrayList<String> speechRecognitionReturnStringsArray;
+    // ArrayList<String> speechRecognitionReturnStringsArray;cursorResultSet.getString(2));
 
-    public String getTTSstring() {
-
+    public String getTTSgreetingString() {
         // returns the string to be spoken by the assistant
 
         return SSDIloveAlf;
-
     }
 
-
-    public String ProcessReturnStringsandReturnNumberToDial(ArrayList<String> speechRecognitionReturnStringsArray) {
-
-		/* This checks the text you said during speech recognition and returns the phone number from the phone number array if its there.
-         *
-		 */
-        String numberToDial = null;
-
-        Log.d(MainActivity.DEBUGTAG, "There are " + speechRecognitionReturnStringsArray.size() + " suggestions");
-
-        for (int i = 1; i < speechRecognitionReturnStringsArray.size(); i++) {
-            Log.d(MainActivity.DEBUGTAG, "You said " + speechRecognitionReturnStringsArray.get(i));
-        }
-
-        for (Integer i = 1; i < contactArray.length; i++) {
-
-            if (speechRecognitionReturnStringsArray.contains("simple speed dial " + i.toString())) {
-                numberToDial = "tel:" + phoneNumberArray[i];
-                Log.d(MainActivity.DEBUGTAG, "Dialing " + contactArray[i]);
-                return numberToDial;
-            } else {
-                numberToDial = null;
-                Log.d(MainActivity.DEBUGTAG, "No such number");
-            }
-        }
-
-        return numberToDial;
+    public String getPhoneNumberString() {
+        return phoneNumberString;
     }
 
+    public String getTTSString() {
+        return ttsString;
+    }
 
     public boolean IsValidPhoneNumber(ArrayList<String> myVoiceInput) {
 
+        boolean isValid;
+        Integer count;
 
-        boolean IsValid = false;
-        Integer count = 1;
+        phoneNumberString = null;
+        ttsString = "";
+        isValid = false;
+        count = 1;
 
         do {
 
             if (myVoiceInput.contains("simple speed dial " + count.toString()))
+
             // choose the number from the array
 
             {
-                IsValid = true;
+                isValid = true;
                 Log.d(MainActivity.DEBUGTAG, "Got one");
-            } else {
-                IsValid = false;
-            }
-            count++;
+                Log.d(MainActivity.DEBUGTAG, "There are " + myVoiceInput.size() + " suggestions");
 
-        } while (!IsValid && count < contactArray.length);
-
-        return IsValid;
-    }
-
-    public String GetPhoneNumberString(ArrayList<String> myVoiceInput) {
-	
-	/* This returns the phone number as a text string to be spoke back by the SSD assistant using TTS*/
-
-        boolean isValid = false;
-        String myTTSstring = " ";
-        Integer count = 1;
-
-        do {
-
-            if (myVoiceInput.contains("simple speed dial " + count.toString()))
-							/*check to see if the simple speed dial command was said and 
-								if so use the counter to find the array location for the phone number to dial and then return it as the TTS*/
-
-            {
-                myTTSstring = "speed dial" + count.toString() + " " + contactArray[count];
-                isValid = true;
-            } else if (myVoiceInput.contains("simple speed dial list")) {
-		/* if you said "simple speed dial list" then concatenate the numbers and return it as TTS*/
-
-                for (Integer i = 1; i < contactArray.length; i++) {
-
-                    myTTSstring = myTTSstring + "speed dial " + i.toString() + " " + contactArray[i] + ",";
-
+                for (int i = 1; i < myVoiceInput.size(); i++) {
+                    Log.d(MainActivity.DEBUGTAG, "You said " + myVoiceInput.get(i - 1)); // arrays start at zero
                 }
-                Log.d(MainActivity.DEBUGTAG, myTTSstring);
-                isValid = true;
+
+                for (Integer i = 1; i <= MainActivity.contactArray.length; i++) {
+
+                    if (myVoiceInput.contains("simple speed dial " + i.toString())) {
+                        Log.d(MainActivity.DEBUGTAG, "Ready to dial " + MainActivity.contactArray[i - 1] + " on " + MainActivity.phoneNumberArray[i - 1]);
+                        phoneNumberString = "tel:" + MainActivity.phoneNumberArray[i - 1];
+                        ttsString = "Speed dial " + i + " " + MainActivity.contactArray[i - 1];
+                        // arrays start at zero
+                    } else ;
+                }
             } else
 
+                count++;
 
-            {
-                myTTSstring = "No such number choose again";
+        } while (!isValid && count <= MainActivity.contactArray.length);
+
+
+        if (!isValid) {
+
+            if (myVoiceInput.contains("simple speed dial list")) {
+                             /* if you said "simple speed dial list" then concatenate the numbers and return it as TTS*/
+
+                for (Integer j = 1; j <= MainActivity.contactArray.length; j++) {
+
+                    ttsString = ttsString + "speed dial " + j.toString() + " " + MainActivity.contactArray[j - 1] + ", ";
+
+                }
+
+                Log.d(MainActivity.DEBUGTAG, ttsString);
+            } else {
+                Log.d(MainActivity.DEBUGTAG, "No such number");
+                ttsString = "No such number";
             }
-
-            count++;
-
         }
 
-        while (!isValid && count < contactArray.length);
-
-        Log.d(MainActivity.DEBUGTAG, "You said " + myVoiceInput.get(0));
-
-        return myTTSstring;
+        return isValid;
 
     }
 

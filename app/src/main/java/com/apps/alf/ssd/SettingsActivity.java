@@ -1,14 +1,15 @@
 package com.apps.alf.ssd;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-public class SettingsActivity extends ActionBarActivity {
+public class SettingsActivity extends AppCompatActivity {
 
     public static int clickcount;
 
@@ -22,20 +23,19 @@ public class SettingsActivity extends ActionBarActivity {
         final Spinner spnChooseSpeedDialNumber = (Spinner) findViewById(R.id.SpnChooseSpeedDialNumber);
 
         // Create a spinner object from the spinner on the activity screen and set its listeners
-
         spnChooseSpeedDialNumber.setOnItemSelectedListener(new MyClickListeners());
         //SSDDatabase db = new SSDDatabase(getApplicationContext(),null,null,1);
         //Cursor cursorResultSet = db.readAllFromDatabase();
 
-        while (MainActivity.cursorResultSet.moveToNext()) {
-
+        if (MainActivity.cursorResultSet.moveToFirst()) {
             EditText name = (EditText) findViewById(R.id.ContactName);
             name.setText(MainActivity.cursorResultSet.getString(1));
             EditText number = (EditText) findViewById(R.id.ContactNumber);
             number.setText(MainActivity.cursorResultSet.getString(2));
-        }
-    }
+        } else
+            Log.d(MainActivity.DEBUGTAG, "Database error");
 
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -52,15 +52,7 @@ public class SettingsActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
-
-
-    //private EditText contactNumber = (EditText) findViewById(R.id.ContactNumber);
-    //private EditText contactName = (EditText) findViewById(R.id.ContactName);
-
 
 }
