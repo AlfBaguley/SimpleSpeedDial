@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -49,12 +48,9 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     final Intent speechrecognitionIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-    //Boolean alreadyDoingOnShakeEvent = false;
     ArrayList<String> speechRecognitionReturnStringsArray;
     private int arrayCount;
-    // The Shake instance variables
-    private SensorManager mSensorManager;
-    private ShakeEventListener mSensorListener;
+
     private TextToSpeech myTTS;
     private Intent TTSintent = new Intent(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA); // Text to Speech intent object
     private MyTouchListener screentaps = new MyTouchListener(this, speechrecognitionIntent, MY_SPEECH_RECOGNITION_CHECK_CODE);
@@ -157,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 		/*
-		 * DETERMINES WHAT TO DO WHEN GET DATA BACK FROM AN INTENT NEED SWITCH
+         * DETERMINES WHAT TO DO WHEN GET DATA BACK FROM AN INTENT NEED SWITCH
 		 * STATEMENTS HERE TO DEAL WITH INTENTS DATA FROM TTS AND SPEECH
 		 * RECOGNITION
 		 */
