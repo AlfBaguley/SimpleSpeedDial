@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        Log.d(DEBUGTAG, "OnCreate called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainactivity);
         AddTouchListener();
@@ -116,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
                 String text = mySSDA.getTTSgreetingString();
                 /*
                  * and use the myTTSstring / method which returns
-				 * 
+				 *
 				 * the string to speak first initialise the intent
 				 */
 
@@ -325,6 +326,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
     @Override
     protected void onResume() {
+        Log.d(DEBUGTAG, "OnResume called");
         super.onResume();
 
         // Need also to re-init TTS and Speech recog perhaps
@@ -336,20 +338,33 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
     protected void onPause() {
 
         // Sav instance variables before app closes.
+        Log.d(DEBUGTAG, "OnPause called");
 
         super.onPause();
     }
 
     @Override
     public void onStart() {
+        Log.d(DEBUGTAG, "OnStart called");
         super.onStart();
     }
 
     @Override
     public void onStop() {
+        Log.d(DEBUGTAG, "OnStop called");
         super.onStop();
     }
 
+    public void onDestroy() {
+        Log.d(DEBUGTAG, "OnDestroy called");
+        super.onDestroy();
+    }
+
+    public void onRestart() {
+        Log.d(DEBUGTAG, "OnRestart called");
+        super.onRestart();
+
+    }
     // -----------------------------------------------------------------------------------------------------------------------------
     private void AddTouchListener() {
 
