@@ -69,70 +69,8 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
         SSDDatabase db = new SSDDatabase(getApplicationContext(), null, null, 1);
         cursorResultSet = db.readAllFromDatabase();
-        arrayCount = 0;
-        while (cursorResultSet.moveToNext()) {
-
-            Log.d(DEBUGTAG, cursorResultSet.getString(0));
-            Log.d(DEBUGTAG, cursorResultSet.getString(1));
-            Log.d(DEBUGTAG, cursorResultSet.getString(2));
-            contactArray[arrayCount] = cursorResultSet.getString(1);
-            phoneNumberArray[arrayCount] = cursorResultSet.getString(2);
-
-            arrayCount++;
-
-        }
-
-        speechrecognitionIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        // ----------------------------------------------------------------------------------------------------------------------------
-
-		/*
-         * TTS intent action configured
-		 */
-
-        //TTSintent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);//
-
-        try {
-            startActivityForResult(TTSintent, MainActivity.MY_TTS_CHECK_CODE);
-
-        } catch (Exception ex) {
-
-            Log.d(MainActivity.DEBUGTAG, "Exception thrown...." + ex);
-        }
-
-        Button speakButton = (Button) findViewById(R.id.btnSpeak);
-
-		/*
-         * The speak button
-		 */
-        speakButton.setOnClickListener(new OnClickListener() {
-
-            @SuppressWarnings("deprecation")
-            @Override
-            public void onClick(View v) {
-
-                // Intent to check for Text To Speech engine present
-
-                Toast.makeText(MainActivity.this, "Hey.Speak to me button clicked", Toast.LENGTH_SHORT).show();
-                Log.d(DEBUGTAG, "Hey,Speak to me button clicked...");
-                String text = mySSDA.getTTSgreetingString();
-                /*
-                 * and use the myTTSstring / method which returns
-				 *
-				 * the string to speak first initialise the intent
-				 */
-
-                if (text != null && text.length() > 0) {
-
-                    Toast.makeText(MainActivity.this, "Saying: " + text, Toast.LENGTH_LONG).show();
-
-                    myTTS.speak(text, TextToSpeech.QUEUE_ADD, null);
-
-                }
-            }
-        });
-
+        db.LoadContactsArray(db, cursorResultSet);
     }
-
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     // end of ONCREATE
 
@@ -325,46 +263,110 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
     // -----------------------------------------------------------------------------------------------------------------------------
 
     @Override
-    protected void onResume() {
-        Log.d(DEBUGTAG, "OnResume called");
-        super.onResume();
 
-        // Need also to re-init TTS and Speech recog perhaps
+    protected void onResume() {
+
+        super.onResume();
+        Log.d(DEBUGTAG, "OnResume called");
+
 
     }
+    // Need also to re-init TTS and Speech recog perhaps
+
+
     // ----------------------------------------------------------------------------------------------------------------------------
 
     @Override
     protected void onPause() {
 
         // Sav instance variables before app closes.
-        Log.d(DEBUGTAG, "OnPause called");
 
         super.onPause();
+        Log.d(DEBUGTAG, "OnPause called");
+
+
     }
 
     @Override
     public void onStart() {
-        Log.d(DEBUGTAG, "OnStart called");
+
         super.onStart();
+        Log.d(DEBUGTAG, "OnStart called");
+        speechrecognitionIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        // ----------------------------------------------------------------------------------------------------------------------------
+
+		/*
+         * TTS intent action configured
+		 */
+
+        //TTSintent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);//
+
+        try {
+            startActivityForResult(TTSintent, MainActivity.MY_TTS_CHECK_CODE);
+
+        } catch (Exception ex) {
+
+            Log.d(MainActivity.DEBUGTAG, "Exception thrown...." + ex);
+        }
+
+        Button speakButton = (Button) findViewById(R.id.btnSpeak);
+
+		/*
+         * The speak button
+		 */
+        speakButton.setOnClickListener(new OnClickListener() {
+
+            @SuppressWarnings("deprecation")
+            @Override
+            public void onClick(View v) {
+
+                // Intent to check for Text To Speech engine present
+
+                Toast.makeText(MainActivity.this, "Hey.Speak to me button clicked", Toast.LENGTH_SHORT).show();
+                Log.d(DEBUGTAG, "Hey,Speak to me button clicked...");
+                String text = mySSDA.getTTSgreetingString();
+                /*
+                 * and use the myTTSstring / method which returns
+				 *
+				 * the string to speak first initialise the intent
+				 */
+
+                if (text != null && text.length() > 0) {
+
+                    Toast.makeText(MainActivity.this, "Saying: " + text, Toast.LENGTH_LONG).show();
+
+                    myTTS.speak(text, TextToSpeech.QUEUE_ADD, null);
+
+                }
+            }
+        });
+
     }
+
 
     @Override
     public void onStop() {
-        Log.d(DEBUGTAG, "OnStop called");
+
         super.onStop();
+        Log.d(DEBUGTAG, "OnStop called");
+
     }
 
     public void onDestroy() {
-        Log.d(DEBUGTAG, "OnDestroy called");
+
         super.onDestroy();
+        Log.d(DEBUGTAG, "OnDestroy called");
+
     }
 
     public void onRestart() {
-        Log.d(DEBUGTAG, "OnRestart called");
+
         super.onRestart();
+        Log.d(DEBUGTAG, "OnRestart called");
+
 
     }
+
     // -----------------------------------------------------------------------------------------------------------------------------
     private void AddTouchListener() {
 

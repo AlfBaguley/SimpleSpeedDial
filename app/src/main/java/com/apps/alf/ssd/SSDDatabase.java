@@ -148,8 +148,24 @@ class SSDDatabase extends SQLiteOpenHelper
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-
     }
 
+    public void LoadContactsArray(SSDDatabase myDB, Cursor myCursor) {
+
+        Log.d(MainActivity.DEBUGTAG, "LoadContactsArray: ");
+        int arrayCount;
+        arrayCount = 0;
+        while (myCursor.moveToNext()) {
+
+            Log.d(MainActivity.DEBUGTAG, myCursor.getString(0));
+            Log.d(MainActivity.DEBUGTAG, myCursor.getString(1));
+            Log.d(MainActivity.DEBUGTAG, myCursor.getString(2));
+            MainActivity.contactArray[arrayCount] = myCursor.getString(1);
+            MainActivity.phoneNumberArray[arrayCount] = myCursor.getString(2);
+
+            arrayCount++;
+
+        }
+    }
 }
 
