@@ -2,12 +2,14 @@ package com.apps.alf.ssd;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
-
-import java.util.ArrayList;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 
 /**
@@ -134,38 +136,97 @@ class SSDDatabase extends SQLiteOpenHelper
 
     }
 
-    public void writeTableRowToDatabase(ArrayList<String> rowData, int rowPosition) {
+    public void writeTableRowToDatabase(String table, Spinner speedDial, EditText contactName, EditText contactNumber) {
 
         /*
 
         Using Contentvalue class object
         and db.insert
-        Requires SQL string
+        Requires SQL string(?)
 
-      code here that writes data to row at "rowPosition" (name and phone number) at the position speeddial number.
+      code here that writes data to row at "rowPosition" (name and phone number) at position speed dial number.
      */
 
+        ContentValues cv = new ContentValues();
+
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
+
+        //cv.put(COL_Speeddial, String.valueOf(speedDial.));
+        cv.put(COL_Name, String.valueOf(contactName.getText()));
+        cv.put(COL_Number, String.valueOf(contactNumber.getText()));
+        db.insert(Speeddial_table, null, cv);
 
     }
 
-    public void LoadContactsArray(SSDDatabase myDB, Cursor myCursor) {
+    public void LoadContactsArray(Cursor myDatabseCursor) {
 
         Log.d(MainActivity.DEBUGTAG, "LoadContactsArray: ");
         int arrayCount;
         arrayCount = 0;
-        while (myCursor.moveToNext()) {
+        while (myDatabseCursor.moveToNext()) {
 
-            Log.d(MainActivity.DEBUGTAG, myCursor.getString(0));
-            Log.d(MainActivity.DEBUGTAG, myCursor.getString(1));
-            Log.d(MainActivity.DEBUGTAG, myCursor.getString(2));
-            MainActivity.contactArray[arrayCount] = myCursor.getString(1);
-            MainActivity.phoneNumberArray[arrayCount] = myCursor.getString(2);
+            Log.d(MainActivity.DEBUGTAG, myDatabseCursor.getString(0));
+            Log.d(MainActivity.DEBUGTAG, myDatabseCursor.getString(1));
+            Log.d(MainActivity.DEBUGTAG, myDatabseCursor.getString(2));
+            MainActivity.contactArray[arrayCount] = myDatabseCursor.getString(1);
+            MainActivity.phoneNumberArray[arrayCount] = myDatabseCursor.getString(2);
 
             arrayCount++;
 
         }
     }
+
+    public void Updatedatabase(Context context, final String contactName, final String contactNumber, final int rowPosition) {
+
+        final SQLiteDatabase db = this.getWritableDatabase();
+        final ContentValues cv = new ContentValues();
+
+        /*  array start at 0
+        database table starts at COL_Speeddial
+         */
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder((context));
+        builder.setMessage(R.string.Dialog_message)
+                .setTitle(R.string.Dialog_title)
+                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        MainActivity.contactArray[rowPosition] = contactName;
+                        MainActivity.phoneNumberArray[rowPosition] = contactNumber;
+                        cv.put(COL_Name, contactName);
+                        cv.put(COL_Number, contactNumber);
+
+
+                        // my database row starts aty 1 not 0 !!!
+                        // convert db row number to a string
+
+                        Integer Row = rowPosition + 1;
+                        String rowStr = Row.toString();
+
+                        db.update(Speeddial_table, cv, COL_Speeddial + "=" + rowStr, null);
+                             /*change the contents of the names and numbers arrays
+                            for that row and also update row in database
+                             */
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        // do nowt
+                        Log.d(MainActivity.DEBUGTAG, "Changes Discarded");
+
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 }
+
+
+
 

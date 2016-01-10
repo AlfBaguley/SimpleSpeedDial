@@ -9,33 +9,38 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import static com.apps.alf.ssd.MainActivity.contactArray;
+import static com.apps.alf.ssd.MainActivity.phoneNumberArray;
+
 public class SettingsActivity extends AppCompatActivity {
 
-    public static int clickcount;
+    static int currentSpeedDialArrayRow;
+    static String currentContactName;
+    static String currentContactNumber;
+
+    // final SimpleSpeedDialAssistant mySSDA = new SimpleSpeedDialAssistant();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SSDDatabase db = new SSDDatabase(this, null, null, 1);
+        Log.d(MainActivity.DEBUGTAG, "Settings activity oncreate ");
         setContentView(R.layout.settings);
         Toast.makeText(getApplicationContext(), "Settings loading....ok", Toast.LENGTH_SHORT).show();
-        clickcount = 0;
-
+        final EditText name = (EditText) findViewById(R.id.ContactName);
+        final EditText number = (EditText) findViewById(R.id.ContactNumber);
         final Spinner spnChooseSpeedDialNumber = (Spinner) findViewById(R.id.SpnChooseSpeedDialNumber);
-
-        // Create a spinner object from the spinner on the activity screen and set its listeners
-        spnChooseSpeedDialNumber.setOnItemSelectedListener(new MyClickListeners());
+        InitTextBoxes(name, number);
+        currentSpeedDialArrayRow = 1;
+        spnChooseSpeedDialNumber.setOnItemSelectedListener(new MyClickListeners(this, db));
         //SSDDatabase db = new SSDDatabase(getApplicationContext(),null,null,1);
         //Cursor cursorResultSet = db.readAllFromDatabase();
 
-        if (MainActivity.cursorResultSet.moveToFirst()) {
-            EditText name = (EditText) findViewById(R.id.ContactName);
-            name.setText(MainActivity.cursorResultSet.getString(1));
-            EditText number = (EditText) findViewById(R.id.ContactNumber);
-            number.setText(MainActivity.cursorResultSet.getString(2));
-        } else
-            Log.d(MainActivity.DEBUGTAG, "Database error");
+        // Create a spinner object from the spinner on the activity screen and set its listeners
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -55,4 +60,27 @@ public class SettingsActivity extends AppCompatActivity {
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        /*  array start at 0
+        database table starts at COL_Speeddial
+         */
+
+        /* initialise the array stuff for checking for changes*/
+
+        //currentSpeedDialArrayRow = 1;
+        currentContactName = contactArray[0];
+        currentContactNumber = phoneNumberArray[0];
+    }
+
+    public void InitTextBoxes(EditText name, EditText number) {
+
+        name.setText(contactArray[0]);
+        number.setText(phoneNumberArray[0]);
+        currentContactName = contactArray[0];
+        currentContactNumber = phoneNumberArray[0];
+
+    }
 }

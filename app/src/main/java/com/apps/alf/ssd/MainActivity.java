@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
         SSDDatabase db = new SSDDatabase(getApplicationContext(), null, null, 1);
         cursorResultSet = db.readAllFromDatabase();
-        db.LoadContactsArray(db, cursorResultSet);
+        db.LoadContactsArray(cursorResultSet);
     }
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     // end of ONCREATE
