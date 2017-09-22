@@ -34,6 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
         InitTextBoxes(name, number);
         currentSpeedDialArrayRow = 1;
         spnChooseSpeedDialNumber.setOnItemSelectedListener(new MyClickListeners(this, db));
+
         //SSDDatabase db = new SSDDatabase(getApplicationContext(),null,null,1);
         //Cursor cursorResultSet = db.readAllFromDatabase();
 
@@ -75,6 +76,25 @@ public class SettingsActivity extends AppCompatActivity {
         currentContactNumber = phoneNumberArray[0];
     }
 
+    protected void onStop() {
+        super.onStop();
+     /*   if ((currentContactName.equals(name.getText().toString())) && (SettingsActivity.currentContactNumber.equals(number.getText().toString())))
+
+        {
+            // Neither contents of name or number have changed !!
+
+            Log.d(MainActivity.DEBUGTAG, name.getText().toString() + " V " + SettingsActivity.currentContactName);
+            Log.d(MainActivity.DEBUGTAG, number.getText().toString() + "  V " + SettingsActivity.currentContactNumber);
+
+        } else {
+
+            Log.d(MainActivity.DEBUGTAG, name.getText().toString() + " Vs " + SettingsActivity.currentContactName);
+            Log.d(MainActivity.DEBUGTAG, number.getText().toString() + "  Vs " + SettingsActivity.currentContactNumber);
+            Log.d(MainActivity.DEBUGTAG, number.getText().toString() + " Row " + SettingsActivity.currentSpeedDialArrayRow);
+            db.Updatedatabase(context, String.valueOf(name.getText()), String.valueOf(number.getText()), SettingsActivity.currentSpeedDialArrayRow);
+        }
+*/
+    }
     public void InitTextBoxes(EditText name, EditText number) {
 
         name.setText(contactArray[0]);

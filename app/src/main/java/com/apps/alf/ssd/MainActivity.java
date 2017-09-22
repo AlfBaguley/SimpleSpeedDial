@@ -1,6 +1,7 @@
 package com.apps.alf.ssd;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,6 +9,7 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
@@ -25,6 +27,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import static android.Manifest.*;
+
 public class MainActivity extends AppCompatActivity implements OnInitListener {
 
     // The debug instance variables
@@ -34,12 +38,13 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
     // My call variables
     static final int MY_CALL_CHECK_CODE = 789;
     private static final int MY_TTS_CHECK_CODE = 123;
+    private static final int REQUEST_PHONE_CALL = 1;
 
     // TTS instance variables+;
     public static Cursor cursorResultSet;
     public static String contactArray[] = new String[10];
     public static String phoneNumberArray[] = new String[10];
-    public static int tapCount = 0;  //counter to monitor number of screen taps ... 4 will call the speech recogniser
+    public static int tapCount = 0;  //counter to monitor number of screen taps ... 3 will call the speech recogniser
     public static boolean tapped3times = false;
     // The SimpleSpeedDialler class variables
     final SimpleSpeedDialAssistant mySSDA = new SimpleSpeedDialAssistant();
@@ -51,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
     ArrayList<String> speechRecognitionReturnStringsArray;
     private int arrayCount;
 
+    /**
+     *
+     */
     private TextToSpeech myTTS;
     private Intent TTSintent = new Intent(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA); // Text to Speech intent object
     private MyTouchListener screentaps = new MyTouchListener(this, speechrecognitionIntent, MY_SPEECH_RECOGNITION_CHECK_CODE);
@@ -88,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({"deprecation", "MissingPermission"})
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 		/*
@@ -130,45 +138,51 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
                             myTTS.setSpeechRate((float) 2.0); // speak a bit quickly please
                             myTTS.speak(mySSDA.getTTSString(), TextToSpeech.QUEUE_ADD, null);
+                            Log.d(DEBUGTAG, "Valid phone number");
 
                             do {
                                 // don't dial until end of chat
+
                             } while (myTTS.isSpeaking());
 
-                            Intent callIntent = new Intent(Intent.ACTION_CALL);
-                            // Create Intent instance for making phone call
 
-                            try {
 
-						/*
-                         * Give the intent object an acceptable phone command
-						 * such as "tel:01889503300"
-						 */
-                                callIntent.setData(Uri.parse(mySSDA.getPhoneNumberString()));
-                            } catch (Exception e) {   // handle exception such as incompatible phone command
+                            if (ActivityCompat.checkSelfPermission(this, permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
 
-                                Toast.makeText(this, "Oh dear call Intent failed", Toast.LENGTH_SHORT).show();
-                                myTTS.speak("Oh dear, call intent failed", TextToSpeech.QUEUE_ADD, null);
-                                break; //
+
+                                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CALL_PHONE},
+                                REQUEST_PHONE_CALL);
+
 
                             }
+else {
 
-                            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                                // TODO: Consider calling
-                                //    ActivityCompat#requestPermissions
-                                // here to request the missing permissions, and then overriding
-                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                //                                          int[] grantResults)
-                                // to handle the case where the user grants the permission. See the documentation
-                                // for ActivityCompat#requestPermissions for more details.
-                                return;
+                                Log.d(DEBUGTAG, "I have permission to make a call");
+
+                                Intent callIntent = new Intent(Intent.ACTION_CALL);
+
+                                try {
+
+
+                                    callIntent.setData(Uri.parse(mySSDA.getPhoneNumberString()));
+                                    startActivity(callIntent);
+
+
+                                } catch (Exception e) {   // handle exception such as incompatible phone command
+                                    Log.d(DEBUGTAG, "Call intent failed");
+                                    Toast.makeText(this, "Oh dear call Intent failed", Toast.LENGTH_SHORT).show();
+                                    myTTS.speak("Oh dear,call intent failed", TextToSpeech.QUEUE_ADD, null);
+                                    break; //
+
+                                }
                             }
-                            startActivity(callIntent); // This asks a dialler to make the phone call
+
 
                         } else {
                             Toast.makeText(this, "Oh dear, No such number", Toast.LENGTH_SHORT).show();
                             myTTS.setSpeechRate((float) 2.0); // speak a bit quickly please
                             myTTS.speak(mySSDA.getTTSString(), TextToSpeech.QUEUE_ADD, null);
+
                         }
 
                         break;
@@ -217,11 +231,53 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
     // -----------------------------------------------------------------------------------------------------------------------------
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
+
+    // The result of the request for permissions (in this case I'm interested in the phone) is returned and handled by this over ridden method
+  //This should only ever be called when the app runs on the phone for the first time after which the app permissions are updated and made persistent.
+
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+
+        switch (requestCode) {
+            case REQUEST_PHONE_CALL : {
+
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+
+                    try {
+
+                        callIntent.setData(Uri.parse(mySSDA.getPhoneNumberString()));
+                        startActivity(callIntent);
+
+                    } catch (Exception e) {   // handle exception such as incompatible phone command
+
+
+                        Toast.makeText(this, "Oh dear call Intent failed", Toast.LENGTH_SHORT).show();
+                        myTTS.speak("Oh dear,call Intent failed", TextToSpeech.QUEUE_ADD, null);
+
+                        //need to u[date to this for API ?> 21
+                        // String utteranceId=this.hashCode() + "";
+                        // myTTS.speak("Oh dear,call Intent failed", TextToSpeech.QUEUE_ADD, null, utteranceId);
+
+                        break; //
+
+                    }
+
+                }
+            }
+        }
+    }
+
     @Override
     public void onInit(int status) {
-        // TODO Auto-generated method stub for text to speech stuff. Called to
+
         // flag completion of TTS engine initialisation
         // ( method to implement from TTS listener interface
+
         if (status == TextToSpeech.SUCCESS) {
             Toast.makeText(MainActivity.this,
 
@@ -316,14 +372,14 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 		 */
         speakButton.setOnClickListener(new OnClickListener() {
 
-            @SuppressWarnings("deprecation")
+            @SuppressWarnings({"deprecation", "MissingPermission"})
             @Override
             public void onClick(View v) {
 
                 // Intent to check for Text To Speech engine present
 
                 Toast.makeText(MainActivity.this, "Hey.Speak to me button clicked", Toast.LENGTH_SHORT).show();
-                Log.d(DEBUGTAG, "Hey,Speak to me button clicked...");
+                Log.d(DEBUGTAG, "Hey,Speak to me button clicked 111...");
                 String text = mySSDA.getTTSgreetingString();
                 /*
                  * and use the myTTSstring / method which returns
