@@ -28,5 +28,7 @@
     <string name="lblSpeedDialNumber">Assign Speed Dial Number</string>
     <string name="type_contacts_name_here">Type contacts name here.</string>
     <string name="type_phone_number_here">Type phone number here.</string>
+    <string name="Dialog_message">Do you want to save changes to current data?</string>
+    <string name="Dialog_title">Save Alert</string>
 
 </resources>

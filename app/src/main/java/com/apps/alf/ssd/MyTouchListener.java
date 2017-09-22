@@ -17,32 +17,39 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 /**
- * Created by Alf on 30/12/2015.
+ *Created by Alf on 30/12/2015.
  */
 public class MyTouchListener extends AppCompatActivity implements View.OnTouchListener {
 
-    CountDownTimer quickTapTimer = new CountDownTimer(1000, 1) {
-        @Override
-        public void onTick(long millisUntilFinished) {
-// nothing required its just a timer
-        }
-
-        @Override
-        public void onFinish() {
-            MainActivity.tapCount = 0;
-            MainActivity.tapped3times = false;
-            Log.d(MainActivity.DEBUGTAG, "TIMER TIMED OUT....reset counter to zero and timer reset");
-        }
-    };
     private int tapsCounted;
     private Intent srIntent;
     private int srIntentCode;
     private Context context;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
+
+   /*
+    ATTENTION: This was auto-generated to implement the App Indexing API.
+    See https://g.co/AppIndexing/AndroidStudio for more information.
+            */
+
     private GoogleApiClient client;
+
+    CountDownTimer quickTapTimer = new CountDownTimer(1000, 1) {
+
+        /* CountDowmTimer is an abstract class but is being instantiated here by an anonymous class that implements its abstract methods
+        It is simpler that the common alrnative, where i could declare a new class that extends CountDownTimer and creates methids for CountDownTimer's abstract methids and delclare an instance of this*/
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+// nothing required its just a timer
+
+}
+        @Override
+    public void onFinish() {
+        MainActivity.tapCount = 0;
+        MainActivity.tapped3times = false;
+        Log.d(MainActivity.DEBUGTAG, "TIMER TIMED OUT....reset counter to zero and timer reset");
+    }
+};
 
     public MyTouchListener(Context context, Intent srIntent, int srIntentCode) {
         this.srIntent = srIntent;
@@ -66,7 +73,7 @@ public class MyTouchListener extends AppCompatActivity implements View.OnTouchLi
                         Log.d(MainActivity.DEBUGTAG, "Tapped once");
                         break;
 
-                    // enable a timer here that resets the tapcounter back to 0 after 1 second so that only 4 quick taps is registerd}
+                    // enable a timer here that resets the tapcounter back to 0 after 1 second so that only 3 quick taps is registerd}
                     case 2:
                         Log.d(MainActivity.DEBUGTAG, "Tapped twice");
                         break;
@@ -78,8 +85,7 @@ public class MyTouchListener extends AppCompatActivity implements View.OnTouchLi
                         MainActivity.tapCount = 0;
                         srIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 
-                        try {
-                            ((Activity) context).startActivityForResult(srIntent, srIntentCode);
+                        try {((Activity) context).startActivityForResult(srIntent, srIntentCode);
                             // context object is cast to activity object and the result of the intent call is passed to the activity with that context
                         } catch (Exception ex) {
 
