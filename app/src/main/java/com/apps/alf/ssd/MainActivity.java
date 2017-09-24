@@ -361,7 +361,6 @@ else {
             startActivityForResult(TTSintent, MainActivity.MY_TTS_CHECK_CODE);
 
         } catch (Exception ex) {
-
             Log.d(MainActivity.DEBUGTAG, "Exception thrown...." + ex);
         }
 
@@ -378,8 +377,8 @@ else {
 
                 // Intent to check for Text To Speech engine present
 
-                Toast.makeText(MainActivity.this, "Hey.Speak to me button clicked", Toast.LENGTH_SHORT).show();
-                Log.d(DEBUGTAG, "Hey,Speak to me button clicked 111...");
+                Toast.makeText(MainActivity.this, "Version 1.1", Toast.LENGTH_SHORT).show();
+                Log.d(DEBUGTAG, "Hey,Speak to me button clicked ..");
                 String text = mySSDA.getTTSgreetingString();
                 /*
                  * and use the myTTSstring / method which returns
