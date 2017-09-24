@@ -14,6 +14,19 @@
         <item>10</item>
     </string-array>
 
+    <string-array name="speed_texts">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+
     <string name="app_name">Simple Speed dialler</string>
     <string name="txtInstruction">Tap the phone 3 times to wake up the assistant </string>
     <string name="action_settings">Settings</string>
@@ -30,5 +43,7 @@
     <string name="type_phone_number_here">Type phone number here.</string>
     <string name="Dialog_message">Do you want to save changes to current data?</string>
     <string name="Dialog_title">Save Alert</string>
+    <string name="btnSpeedDialMode">Switch to speed dial</string>
+    <string name="btnSwitchToText">Switch to speed text</string>
 
 </resources>

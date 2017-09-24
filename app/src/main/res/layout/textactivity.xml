@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.AlfsApps.SimpleSpeedDialler.MainActivity">
+    tools:context="com.AlfsApps.SimpleSpeedDialler.textactivity">
 
     <ImageView
         android:id="@+id/touch_image"
@@ -21,7 +21,7 @@
         android:src="@drawable/ssda" />
 
     <TextView
-        android:id="@+id/txtInstruction"
+        android:id="@+id/txtInstructionText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -30,7 +30,7 @@
         android:visibility="visible" />
 
     <Button
-        android:id="@+id/btnSpeak"
+        android:id="@+id/btnSpeakText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -38,7 +38,7 @@
         android:layout_alignParentRight="true"
         android:clickable="true"
         android:enabled="true"
-        android:text="@string/btnSwitchToText"
+        android:text="@string/btnSpeedDialMode"
         android:visibility="visible"
         tools:textSize="25sp" />
 
