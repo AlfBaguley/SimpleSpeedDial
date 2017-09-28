@@ -24,6 +24,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // getActionBar().setDisplayHomeAsUpEnabled(true);
         SSDDatabase db = new SSDDatabase(this, null, null, 1);
         Log.d(MainActivity.DEBUGTAG, "Settings activity oncreate ");
         setContentView(R.layout.settings);
@@ -46,18 +47,35 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
 /*create database object and set spinner to first value and text boxes to corresponding record*/
+
+        getMenuInflater().inflate(R.menu.settings, menu);
+
         return true;
 
     }
 
     @Override
+
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        switch (id) {
+
+            case android.R.id.home:
+
+                finish();
+                return true;
+
+            case R.id.action_back:
+
+                finish();
+                return true;
+        }
+
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
