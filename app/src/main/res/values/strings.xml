@@ -19,7 +19,7 @@
         <item>2</item>
         <item>3</item>
         <item>4</item>
-        <item>5</item>
+        <item>5</item>`
         <item>6</item>
         <item>7</item>
         <item>8</item>
@@ -34,6 +34,7 @@
     <string name="btnMakeCall">Make call</string>
     <string name="lblSettings">Settings</string>
     <string name="Settings">Settings</string>
+    <string name="action_exit">Exit</string>
     <string name="title_activity_settings">Settings Activity</string>
     <string name="PhoneList">Phone Number list</string>
     <string name="lblContactName">Contact Name</string>

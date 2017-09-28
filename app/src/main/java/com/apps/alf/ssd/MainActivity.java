@@ -302,11 +302,32 @@ else {
     // ----------------------------------------------------------------------------------------------------------------------------
 
     @Override
+
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        switch (id) {
+
+            case R.id.action_settings:
+
+            {
+
+                // open new activity
+                Intent i = new Intent(this, SettingsActivity.class);
+                startActivity(i);
+                return true;
+            }
+
+            case R.id.action_exit:
+
+            {
+                Toast.makeText(MainActivity.this, "Version 1.1", Toast.LENGTH_SHORT).show();
+            }
+
+        }
         if (id == R.id.action_settings) {
 
             // open new activity
@@ -314,6 +335,7 @@ else {
             startActivity(i);
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
     // -----------------------------------------------------------------------------------------------------------------------------
