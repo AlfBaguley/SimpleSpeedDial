@@ -29,14 +29,14 @@
 
     <string name="app_name">Simple Speed dialler</string>
     <string name="txtInstruction">Tap the phone 3 times to wake up the assistant </string>
-    <string name="action_settings">Settings</string>
+    <string name="action_phone_numbers">Phone numbers</string>
     <string name="btnSpeak">Speak to me</string>
     <string name="btnMakeCall">Make call</string>
     <string name="lblSettings">Settings</string>
     <string name="Settings">Settings</string>
-    <string name="action_exit">Exit</string>
+    <string name="action_show_version">Show version</string>
     <string name="action_back">Back</string>
-    <string name="title_activity_settings">Settings Activity</string>
+    <string name="title_Phone_Numbers">Phone numbers</string>
     <string name="PhoneList">Phone Number list</string>
     <string name="lblContactName">Contact Name</string>
     <string name="lblContactNumber">Contact Number</string>

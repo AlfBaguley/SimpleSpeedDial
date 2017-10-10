@@ -311,17 +311,17 @@ else {
 
         switch (id) {
 
-            case R.id.action_settings:
+            case R.id.action_phone_numbers:
 
             {
 
                 // open new activity
-                Intent i = new Intent(this, SettingsActivity.class);
+                Intent i = new Intent(this, PhoneNumbers.class);
                 startActivity(i);
                 return true;
             }
 
-            case R.id.action_exit:
+            case R.id.action_show_version:
 
             {
                 Toast.makeText(MainActivity.this, "Version 1.1", Toast.LENGTH_SHORT).show();
@@ -332,7 +332,7 @@ else {
        /* if (id == R.id.action_settings) {
 
             // open new activity
-            Intent i = new Intent(this, SettingsActivity.class);
+            Intent i = new Intent(this, phonenumbers.class);
             startActivity(i);
             return true;
         }

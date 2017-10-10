@@ -12,7 +12,7 @@ import android.widget.Toast;
 import static com.apps.alf.ssd.MainActivity.contactArray;
 import static com.apps.alf.ssd.MainActivity.phoneNumberArray;
 
-public class SettingsActivity extends AppCompatActivity {
+public class PhoneNumbers extends AppCompatActivity {
 
     static int currentSpeedDialArrayRow;
     static String currentContactName;
@@ -27,7 +27,7 @@ public class SettingsActivity extends AppCompatActivity {
         // getActionBar().setDisplayHomeAsUpEnabled(true);
         SSDDatabase db = new SSDDatabase(this, null, null, 1);
         Log.d(MainActivity.DEBUGTAG, "Settings activity oncreate ");
-        setContentView(R.layout.settings);
+        setContentView(R.layout.phonenumbers);
         Toast.makeText(getApplicationContext(), "Settings loading....ok", Toast.LENGTH_SHORT).show();
         final EditText name = (EditText) findViewById(R.id.ContactName);
         final EditText number = (EditText) findViewById(R.id.ContactNumber);
@@ -49,7 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
 /*create database object and set spinner to first value and text boxes to corresponding record*/
 
-        getMenuInflater().inflate(R.menu.settings, menu);
+        getMenuInflater().inflate(R.menu.phonenumbers, menu);
 
         return true;
 
@@ -76,7 +76,7 @@ public class SettingsActivity extends AppCompatActivity {
                 return true;
         }
 
-        return id == R.id.action_settings || super.onOptionsItemSelected(item);
+        return id == R.id.action_phone_numbers || super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -96,20 +96,20 @@ public class SettingsActivity extends AppCompatActivity {
 
     protected void onStop() {
         super.onStop();
-     /*   if ((currentContactName.equals(name.getText().toString())) && (SettingsActivity.currentContactNumber.equals(number.getText().toString())))
+     /*   if ((currentContactName.equals(name.getText().toString())) && (phonenumbers.currentContactNumber.equals(number.getText().toString())))
 
         {
             // Neither contents of name or number have changed !!
 
-            Log.d(MainActivity.DEBUGTAG, name.getText().toString() + " V " + SettingsActivity.currentContactName);
-            Log.d(MainActivity.DEBUGTAG, number.getText().toString() + "  V " + SettingsActivity.currentContactNumber);
+            Log.d(MainActivity.DEBUGTAG, name.getText().toString() + " V " + phonenumbers.currentContactName);
+            Log.d(MainActivity.DEBUGTAG, number.getText().toString() + "  V " + phonenumbers.currentContactNumber);
 
         } else {
 
-            Log.d(MainActivity.DEBUGTAG, name.getText().toString() + " Vs " + SettingsActivity.currentContactName);
-            Log.d(MainActivity.DEBUGTAG, number.getText().toString() + "  Vs " + SettingsActivity.currentContactNumber);
-            Log.d(MainActivity.DEBUGTAG, number.getText().toString() + " Row " + SettingsActivity.currentSpeedDialArrayRow);
-            db.Updatedatabase(context, String.valueOf(name.getText()), String.valueOf(number.getText()), SettingsActivity.currentSpeedDialArrayRow);
+            Log.d(MainActivity.DEBUGTAG, name.getText().toString() + " Vs " + phonenumbers.currentContactName);
+            Log.d(MainActivity.DEBUGTAG, number.getText().toString() + "  Vs " + phonenumbers.currentContactNumber);
+            Log.d(MainActivity.DEBUGTAG, number.getText().toString() + " Row " + phonenumbers.currentSpeedDialArrayRow);
+            db.Updatedatabase(context, String.valueOf(name.getText()), String.valueOf(number.getText()), phonenumbers.currentSpeedDialArrayRow);
         }
 */
     }
