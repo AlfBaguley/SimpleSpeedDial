@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.apps.alf.ssd"
     android:versionCode="1"
-    android:versionName="1.0">
 
+    android:versionName="1.0">
     <uses-sdk
         android:minSdkVersion="21"
         android:targetSdkVersion="23" />
@@ -27,8 +27,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"
+            android:name=".PhoneNumbers"
+            android:label="@string/title_Phone_Numbers"
             android:parentActivityName="android.accounts.AccountAuthenticatorActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -42,4 +42,3 @@
     </application>
 
 </manifest>
-

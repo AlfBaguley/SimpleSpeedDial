@@ -42,20 +42,20 @@ public class MyClickListeners extends AppCompatActivity implements AdapterView.O
         EditText name = (EditText) p.findViewById(R.id.ContactName);
         EditText number = (EditText) p.findViewById(R.id.ContactNumber);
 
-        if ((SettingsActivity.currentContactName.equals(name.getText().toString())) && (SettingsActivity.currentContactNumber.equals(number.getText().toString())))
+        if ((PhoneNumbers.currentContactName.equals(name.getText().toString())) && (PhoneNumbers.currentContactNumber.equals(number.getText().toString())))
 
         {
             // Neither contents of name or number have changed !!
 
-            Log.d(MainActivity.DEBUGTAG, name.getText().toString() + " V " + SettingsActivity.currentContactName);
-            Log.d(MainActivity.DEBUGTAG, number.getText().toString() + "  V " + SettingsActivity.currentContactNumber);
+            Log.d(MainActivity.DEBUGTAG, name.getText().toString() + " V " + PhoneNumbers.currentContactName);
+            Log.d(MainActivity.DEBUGTAG, number.getText().toString() + "  V " + PhoneNumbers.currentContactNumber);
 
         } else {
 
-            Log.d(MainActivity.DEBUGTAG, name.getText().toString() + " Vs " + SettingsActivity.currentContactName);
-            Log.d(MainActivity.DEBUGTAG, number.getText().toString() + "  Vs " + SettingsActivity.currentContactNumber);
-            Log.d(MainActivity.DEBUGTAG, number.getText().toString() + " Row " + SettingsActivity.currentSpeedDialArrayRow);
-            db.Updatedatabase(context, String.valueOf(name.getText()), String.valueOf(number.getText()), SettingsActivity.currentSpeedDialArrayRow);
+            Log.d(MainActivity.DEBUGTAG, name.getText().toString() + " Vs " + PhoneNumbers.currentContactName);
+            Log.d(MainActivity.DEBUGTAG, number.getText().toString() + "  Vs " + PhoneNumbers.currentContactNumber);
+            Log.d(MainActivity.DEBUGTAG, number.getText().toString() + " Row " + PhoneNumbers.currentSpeedDialArrayRow);
+            db.Updatedatabase(context, String.valueOf(name.getText()), String.valueOf(number.getText()), PhoneNumbers.currentSpeedDialArrayRow);
         }
 
 
@@ -78,9 +78,9 @@ public class MyClickListeners extends AppCompatActivity implements AdapterView.O
 
         name.setText(MainActivity.contactArray[position]);
         number.setText(MainActivity.phoneNumberArray[position]);
-        SettingsActivity.currentContactName = name.getText().toString();
-        SettingsActivity.currentContactNumber = number.getText().toString();
-        SettingsActivity.currentSpeedDialArrayRow = position;
+        PhoneNumbers.currentContactName = name.getText().toString();
+        PhoneNumbers.currentContactNumber = number.getText().toString();
+        PhoneNumbers.currentSpeedDialArrayRow = position;
 
     }
 
