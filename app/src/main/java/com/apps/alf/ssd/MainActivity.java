@@ -321,7 +321,7 @@ else {
                 return true;
             }
 
-            case R.id.action_exit:
+            case R.id.action_version:
 
             {
                 Toast.makeText(MainActivity.this, "Version 1.1", Toast.LENGTH_SHORT).show();
