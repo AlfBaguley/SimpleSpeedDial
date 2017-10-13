@@ -61,6 +61,7 @@ public class PhoneNumbers extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         switch (id) {
@@ -76,7 +77,7 @@ public class PhoneNumbers extends AppCompatActivity {
                 return true;
         }
 
-        return id == R.id.action_phone_numbers || super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

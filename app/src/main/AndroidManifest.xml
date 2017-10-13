@@ -28,7 +28,7 @@
         </activity>
         <activity
             android:name=".PhoneNumbers"
-            android:label="@string/title_Phone_Numbers"
+            android:label="Phone numbers"
             android:parentActivityName="android.accounts.AccountAuthenticatorActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

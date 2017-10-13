@@ -316,7 +316,7 @@ else {
             {
 
                 // open new activity
-                Intent i = new Intent(this, SettingsActivity.class);
+                Intent i = new Intent(this, PhoneNumbers.class);
                 startActivity(i);
                 return true;
             }
