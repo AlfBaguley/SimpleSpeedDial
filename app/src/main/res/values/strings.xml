@@ -14,14 +14,66 @@
         <item>10</item>
     </string-array>
 
+    <string-array name="speed_dial_contact_name">
+        <item>Home</item>
+        <item>Karen</item>
+        <item>George</item>
+        <item>Emma</item>
+        <item>Mum and Dad</item>
+        <item>available</item>
+        <item>available</item>
+        <item>available</item>
+        <item>available</item>
+        <item>available</item>
+    </string-array>
+
+    <string-array name="speed_dial_phone_number">
+        <item>01952840465</item>
+        <item>07859769076</item>
+        <item>07534344366</item>
+        <item>07498286323</item>
+        <item>01606853203</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+
     <string-array name="speed_texts">
-        <item>1</item>
+        <item></item>
         <item>2</item>
         <item>3</item>
         <item>4</item>
         <item>5</item>
         <item>6</item>
         <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+
+    <string-array name="speed_text_contact_name">
+        <item>Karen</item>
+        <item>George</item>
+        <item>Emma</item>
+        <item>Mum and Dad</item>
+        <item>Daz</item>
+        <item>Kev</item>
+        <item>Gribbo</item>
+        <item>Available</item>
+        <item>Available</item>
+        <item>Available</item>
+    </string-array>
+
+    <string-array name="speed_text_phone_number">
+        <item>07850769076</item>
+        <item>07534344366</item>
+        <item>07498286323</item>
+        <item>07812810007</item>
+        <item>07493869238</item>
+        <item>07880005945</item>
+        <item>07471227310</item>
         <item>8</item>
         <item>9</item>
         <item>10</item>
@@ -36,7 +88,7 @@
     <string name="Settings">Settings</string>
     <string name="action_exit">Exit</string>
     <string name="action_back">Back</string>
-    <string name="action_phone_numbers">Phone numbers</string>
+    <string name="phone_numbers">Phone numbers</string>
     <string name="title_activity_settings">Settings Activity</string>
     <string name="PhoneList">Phone Number list</string>
     <string name="lblContactName">Contact Name</string>
