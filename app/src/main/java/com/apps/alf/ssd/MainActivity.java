@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -43,7 +44,10 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
     // TTS instance variables+;
     public static Cursor cursorResultSet;
     public static String contactArray[] = new String[10];
+    public static String speeddialArray[][] = new String[10][3];
+    public static String speedtextArray[][] = new String[10][3];
     public static String phoneNumberArray[] = new String[10];
+    public Resources myStringResources;   // Get all string resources form Strings.xml
     public static int tapCount = 0;  //counter to monitor number of screen taps ... 3 will call the speech recogniser
     public static boolean tapped3times = false;
     // The SimpleSpeedDialler class variables
@@ -63,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
     private Intent TTSintent = new Intent(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA); // Text to Speech intent object
     private MyTouchListener screentaps = new MyTouchListener(this, speechrecognitionIntent, MY_SPEECH_RECOGNITION_CHECK_CODE);
 
+
+
     // +++++++++++++++++++++++ ONCREATE
 
     @Override
@@ -78,6 +84,13 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         SSDDatabase db = new SSDDatabase(getApplicationContext(), null, null, 1);
         cursorResultSet = db.readAllFromDatabase();
         db.LoadContactsArray(cursorResultSet);
+        myStringResources = getResources();
+        Log.d(DEBUGTAG, "LOOK AT THE RESOURCE STRING ARRAY....");
+        String[] Arr = new String[10];
+        Arr = myStringResources.getStringArray(R.array.speed_text_contact_name);
+        Log.d(DEBUGTAG, Arr[1]);
+        Log.d(DEBUGTAG, "LOOK AT THE RESOURCE STRING ARRAY....");
+        db.initialiseDatabaseArrays(myStringResources);
     }
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     // end of ONCREATE

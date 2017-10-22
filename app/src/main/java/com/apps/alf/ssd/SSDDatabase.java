@@ -3,13 +3,18 @@ package com.apps.alf.ssd;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.util.Printer;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import static java.lang.System.arraycopy;
 
 
 /**
@@ -20,6 +25,8 @@ class SSDDatabase extends SQLiteOpenHelper
 {
     // Instance variables .....//
 
+    public String speeddialArray[][] = new String[10][3];
+    public String speedtextArray[][] = new String[10][3];
     private static final String COL_Number = "Number";
     private static final String sql = "select * from speeddials";
     private static final String Speeddial_table = "Speeddials";
@@ -27,7 +34,12 @@ class SSDDatabase extends SQLiteOpenHelper
     private static final String COL_Speeddial = "Speeddial";
     private static final String COL_Name = "Name";
     private static final String MYTAG = "AWB";
-// these are all string constants, the table column names//
+    // these are all string constants, the table column names//
+
+
+    public String[] a;
+    public String[] b;
+    public String[] c;
 
     public SSDDatabase(Context context, String dbName, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, "MySSD.db", factory, 1);
@@ -43,6 +55,8 @@ class SSDDatabase extends SQLiteOpenHelper
         //CharSequence text = "Databased created";
         // Toast.makeText(context,text, Toast.LENGTH_SHORT).show;
 
+        int c;
+
         String sql = String
                 .format("Create table %s (%s INTEGER PRIMARY KEY, %s VARCHAR(50) NOT NULL, %s VARCHAR(20) NOT NULL)",
                         Speeddial_table, COL_Speeddial, COL_Name, COL_Number);
@@ -50,6 +64,8 @@ class SSDDatabase extends SQLiteOpenHelper
         Log.d(MYTAG, "DB table created");
         // db = getWritableDatabase();  // create a new SQLiteDatabase object, call it db
         ContentValues values = new ContentValues(); // create an object full of values
+
+
 
         values.put(COL_Speeddial, 1);
         values.put(COL_Name, "Home");
@@ -162,18 +178,66 @@ class SSDDatabase extends SQLiteOpenHelper
 
     public void LoadContactsArray(Cursor databaseCursor) {
 
-        Log.d(MainActivity.DEBUGTAG, "LoadContactsArray: ");
+        Log.d(MYTAG, "LoadContactsArray: ");
         int arrayCount;
         arrayCount = 0;
         while (databaseCursor.moveToNext()) {
 
-            Log.d(MainActivity.DEBUGTAG, databaseCursor.getString(0));
-            Log.d(MainActivity.DEBUGTAG, databaseCursor.getString(1));
-            Log.d(MainActivity.DEBUGTAG, databaseCursor.getString(2));
+            Log.d(MYTAG, databaseCursor.getString(0));
+            Log.d(MYTAG, databaseCursor.getString(1));
+            Log.d(MYTAG, databaseCursor.getString(2));
             MainActivity.contactArray[arrayCount] = databaseCursor.getString(1);
             MainActivity.phoneNumberArray[arrayCount] = databaseCursor.getString(2);
 
             arrayCount++;
+
+        }
+    }
+
+    public void initialiseDatabaseArrays(Resources Res) {
+
+        int i, j;
+
+        for (i = 0; i < 10; i++)
+
+        {
+            // Log.d(MYTAG, " Speed Text > " + Res.getStringArray(R.array.speed_texts)[i]);
+            // Log.d(MYTAG, " Contact Name> " + Res.getStringArray(R.array.speed_text_contact_name)[i]);
+            //  Log.d(MYTAG, " Phone Number > " + Res.getStringArray(R.array.speed_text_phone_number)[i]);
+
+
+            speedtextArray[i][0] = Res.getStringArray(R.array.speed_texts)[i];
+            speedtextArray[i][1] = Res.getStringArray(R.array.speed_text_contact_name)[i];
+            speedtextArray[i][2] = Res.getStringArray(R.array.speed_text_phone_number)[i];
+            speeddialArray[i][0] = Res.getStringArray(R.array.speed_dials)[i];
+            //   speeddialArray[i][1] = Res.getStringArray(R.array.speed_dial_contact_name)[i];
+            //   speeddialArray[i][2] = Res.getStringArray(R.array.speed_dial_phone_number)[i];
+
+            //speeddialArray[i][0] = a[i];
+            // Log.d(MYTAG, "Speed dial > " + myarray[i]);
+            //Log.d(MYTAG, " Contact > " + b[i]);
+            // Log.d(MYTAG, "Number > " + c[i]);
+            //speeddialArray[i][1] = b[i];
+            //speeddialArray[i][2] = c[i];
+
+        }
+
+
+        for (i = 0; i < 10; i++) ;
+        {
+
+            Log.d(MYTAG, speeddialArray[i][0]);
+            Log.d(MYTAG, speeddialArray[i][1]);
+            Log.d(MYTAG, speeddialArray[i][2]);
+
+        }
+
+        for (i = 0; i < 10; i++) ;
+        {
+
+            Log.d(MYTAG, speedtextArray[i][0]);
+            Log.d(MYTAG, speedtextArray[i][1]);
+            Log.d(MYTAG, speedtextArray[i][2]);
 
         }
     }
