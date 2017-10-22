@@ -3,13 +3,18 @@ package com.apps.alf.ssd;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.util.Printer;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import static java.lang.System.arraycopy;
 
 
 /**
@@ -20,6 +25,8 @@ class SSDDatabase extends SQLiteOpenHelper
 {
     // Instance variables .....//
 
+    public static String speeddialArray[][] = new String[10][3];
+    public static String speedtextArray[][] = new String[10][3];
     private static final String COL_Number = "Number";
     private static final String sql = "select * from speeddials";
     private static final String Speeddial_table = "Speeddials";
@@ -27,7 +34,12 @@ class SSDDatabase extends SQLiteOpenHelper
     private static final String COL_Speeddial = "Speeddial";
     private static final String COL_Name = "Name";
     private static final String MYTAG = "AWB";
-// these are all string constants, the table column names//
+    // these are all string constants, the table column names//
+
+
+    public String[] a;
+    public String[] b;
+    public String[] c;
 
     public SSDDatabase(Context context, String dbName, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, "MySSD.db", factory, 1);
@@ -50,6 +62,7 @@ class SSDDatabase extends SQLiteOpenHelper
         Log.d(MYTAG, "DB table created");
         // db = getWritableDatabase();  // create a new SQLiteDatabase object, call it db
         ContentValues values = new ContentValues(); // create an object full of values
+
 
         values.put(COL_Speeddial, 1);
         values.put(COL_Name, "Home");
@@ -176,6 +189,42 @@ class SSDDatabase extends SQLiteOpenHelper
             arrayCount++;
 
         }
+    }
+
+    public void initialiseDatabaseArrays(Resources Res) {
+
+
+        int i;
+
+        arraycopy(Res.getStringArray(R.array.speed_dials), 0, a, 0, 10);
+        arraycopy(Res.getStringArray(R.array.speed_dial_contact_name), 0, b, 0, 10);
+        arraycopy(Res.getStringArray(R.array.speed_dial_phone_number), 0, c, 0, 10);
+
+        //a = Res.getStringArray(R.array.speed_dials);
+        //b = Res.getStringArray(R.array.speed_dial_contact_name);
+        // c = Res.getStringArray(R.array.speed_dial_phone_number);
+
+
+        for (i = 0; i < 10; i++) ;
+
+        speeddialArray[i][0] = a[i];
+        Log.d(MainActivity.DEBUGTAG, "DBArray > " + a[i]);
+        speeddialArray[i][1] = b[i];
+        speeddialArray[i][2] = c[i];
+
+
+        {
+        }
+
+        for (i = 0; i < 10; i++) ;
+        {
+
+            Log.d(MainActivity.DEBUGTAG, speeddialArray[i][0]);
+            Log.d(MainActivity.DEBUGTAG, speeddialArray[i][1]);
+            Log.d(MainActivity.DEBUGTAG, speeddialArray[i][2]);
+
+        }
+
     }
 
     public void Updatedatabase(Context context, final String contactName, final String contactNumber, final int rowPosition) {
